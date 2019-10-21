@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 
 public class GameViewModel : ViewModel() {
 
-    private var word = ""
-    private var score = 0
+    public var word = ""
+    public var score = 0
     private lateinit var wordList: MutableList<String>
 
     init {
@@ -52,16 +52,6 @@ public class GameViewModel : ViewModel() {
             //Select and remove a word from the list
             word = wordList.removeAt(0)
         }
-        updateWordText()
-        updateScoreText()
-    }
-
-    private fun updateWordText() {
-        binding.wordText.text = word
-    }
-
-    private fun updateScoreText() {
-        binding.scoreText.text = score.toString()
     }
 
     public fun onSkip() {
