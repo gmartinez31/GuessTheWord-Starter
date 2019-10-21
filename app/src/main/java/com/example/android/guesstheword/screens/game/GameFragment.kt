@@ -17,11 +17,13 @@
 package com.example.android.guesstheword.screens.game
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import com.example.android.guesstheword.R
 import com.example.android.guesstheword.databinding.GameFragmentBinding
 
@@ -30,11 +32,9 @@ import com.example.android.guesstheword.databinding.GameFragmentBinding
  */
 class GameFragment : Fragment() {
 
-    // The current word
     private var word = ""
-
-    // The current score
     private var score = 0
+    private lateinit var viewModel: GameViewModel
 
     // The list of words - the front of the list is the next word to guess
     private lateinit var wordList: MutableList<String>
@@ -51,6 +51,11 @@ class GameFragment : Fragment() {
                 container,
                 false
         )
+
+        Log.i("GameFragment", "Called ViewModelProviders.of")
+        // always use a VM Provider instead of instantiating a viewmodel directly cuz
+        // that always happens. A provider returns an existing vm if one exists or creates one if doesn't
+        viewModel = ViewModelProviders.of(this).get(GameViewModel::class.java)
 
         resetList()
         nextWord()
