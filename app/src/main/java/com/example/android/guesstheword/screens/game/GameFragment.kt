@@ -24,6 +24,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.NavHostFragment
 import com.example.android.guesstheword.R
@@ -53,37 +54,29 @@ class GameFragment : Fragment() {
         // that always happens. A provider returns an existing vm if one exists or creates one if doesn't
         viewModel = ViewModelProviders.of(this).get(GameViewModel::class.java)
 
+        // this observer receives an event when the data held by the LiveData changes
+        // also, essentially when the values of these changes, the displayed score/value text on the screen automatically updates
+        // because they're observing the values via the LiveData they're wrapped in.
+        viewModel.score.observe(this, Observer { newScore -> binding.scoreText.text = newScore.toString() })
+        viewModel.word.observe(this, Observer { newWord -> binding.scoreText.text = newWord.toString() })
+
         binding.correctButton.setOnClickListener { onCorrect() }
         binding.skipButton.setOnClickListener { onSkip() }
         binding.endGameButton.setOnClickListener { onEndGame() }
 
-        updateScoreText()
-        updateWordText()
         return binding.root
     }
 
     private fun onSkip() {
         viewModel.onSkip()
-        updateWordText()
-        updateScoreText()
     }
 
     private fun onCorrect() {
         viewModel.onCorrect()
-        updateScoreText()
-        updateWordText()
     }
 
     private fun onEndGame() {
         gameFinished()
-    }
-
-    private fun updateWordText() {
-        binding.wordText.text = viewModel.word.value
-    }
-
-    private fun updateScoreText() {
-        binding.scoreText.text = viewModel.score.toString()
     }
 
     private fun gameFinished() {
