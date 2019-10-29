@@ -59,6 +59,7 @@ class GameFragment : Fragment() {
         // because they're observing the values via the LiveData they're wrapped in.
         viewModel.score.observe(this, Observer { newScore -> binding.scoreText.text = newScore.toString() })
         viewModel.word.observe(this, Observer { newWord -> binding.scoreText.text = newWord.toString() })
+        viewModel.eventGameFinished.observe(this, Observer<Boolean> { hasFinished -> if (hasFinished) gameFinished() })
 
         binding.correctButton.setOnClickListener { onCorrect() }
         binding.skipButton.setOnClickListener { onSkip() }
