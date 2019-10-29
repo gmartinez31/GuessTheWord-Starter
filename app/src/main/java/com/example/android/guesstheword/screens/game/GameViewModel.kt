@@ -2,19 +2,28 @@ package com.example.android.guesstheword.screens.game
 
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 public class GameViewModel : ViewModel() {
 
-    val word = MutableLiveData<String>()
-    val score = MutableLiveData<Int>()
+    // What we're doing here is encapsulating the MutableLiveData objects. To prevent anything but the VM from modifying these guys
+    // We add backing properties to allow read access via LiveData by overriding the default get() method
+    private val _word = MutableLiveData<String>()
+    val word: LiveData<String>
+        get() = _word
+
+    private val _score = MutableLiveData<Int>()
+    val score: LiveData<Int>
+        get() = _score
+
     private lateinit var wordList: MutableList<String>
 
     init {
         Log.i("GameViewModel", "GameViewModel created!")
-        word.value = ""
-        score.value = 0
+        _word.value = ""
+        _score.value = 0
 
         resetList()
         nextWord()
@@ -55,20 +64,20 @@ public class GameViewModel : ViewModel() {
     private fun nextWord() {
         if (!wordList.isEmpty()) {
             //Select and remove a word from the list
-            word.value = wordList.removeAt(0)
+            _word.value = wordList.removeAt(0)
         }
     }
 
     public fun onSkip() {
         if (!wordList.isEmpty()) {
-            score.value = (score.value)?.minus(1)
+            _score.value = (score.value)?.minus(1)
         }
         nextWord()
     }
 
     public fun onCorrect() {
         if (!wordList.isEmpty()) {
-            score.value = (score.value)?.plus(1)
+            _score.value = (score.value)?.plus(1)
         }
         nextWord()
     }
