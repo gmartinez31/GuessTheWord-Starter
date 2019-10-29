@@ -92,4 +92,11 @@ public class GameViewModel : ViewModel() {
         _eventGameFinished.value = true
     }
 
+    fun onGameFinishedComplete() {
+        // we're setting it back to false to prevent from observers from being updated every time said observers
+        // change from an inactive to active state (which would trigger those methods)
+        // when a fragment is re-created after screen rotation, it moves from inactive to active
+        _eventGameFinished.value = false
+    }
+
 }
