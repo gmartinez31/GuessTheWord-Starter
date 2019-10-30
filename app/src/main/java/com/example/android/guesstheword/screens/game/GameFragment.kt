@@ -57,7 +57,6 @@ class GameFragment : Fragment() {
         // this observer receives an event when the data held by the LiveData changes
         // also, essentially when the values of these changes, the displayed score/value text on the screen automatically updates
         // because they're observing the values via the LiveData they're wrapped in.
-        viewModel.score.observe(this, Observer { newScore -> binding.scoreText.text = newScore.toString() })
         viewModel.eventGameFinished.observe(this, Observer<Boolean> { hasFinished -> if (hasFinished) gameFinished() })
 
         // here we data binded the viewmodel of this fragment to the one listed in the view (game_fragment.xml) to have direct communication between the VM and View
