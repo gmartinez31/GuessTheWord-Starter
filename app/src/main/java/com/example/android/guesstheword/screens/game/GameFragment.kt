@@ -58,12 +58,15 @@ class GameFragment : Fragment() {
         // also, essentially when the values of these changes, the displayed score/value text on the screen automatically updates
         // because they're observing the values via the LiveData they're wrapped in.
         viewModel.score.observe(this, Observer { newScore -> binding.scoreText.text = newScore.toString() })
-        viewModel.word.observe(this, Observer { newWord -> binding.scoreText.text = newWord.toString() })
         viewModel.eventGameFinished.observe(this, Observer<Boolean> { hasFinished -> if (hasFinished) gameFinished() })
 
         // here we data binded the viewmodel of this fragment to the one listed in the view (game_fragment.xml) to have direct communication between the VM and View
         // Thereafter, we can use listener bindings to change certain view elements based on the logic defined in vm via typical events such as onClick, onZoomIn, etc.
         binding.gameViewModel = viewModel
+
+        // Specify the current activity as the lifecycle owner of the binding.
+        // This is used so that the binding can observe LiveData updates
+        binding.lifecycleOwner = this
 
         return binding.root
     }

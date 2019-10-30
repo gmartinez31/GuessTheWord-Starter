@@ -56,7 +56,6 @@ class ScoreFragment : Fragment() {
         viewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(ScoreViewModel::class.java)
 
-        viewModel.score.observe(this, Observer { newScore -> binding.scoreText.text = newScore.toString() })
         viewModel.eventPlayAgain.observe(this, Observer<Boolean> { playAgain ->
             if (playAgain) {
                 findNavController().navigate(ScoreFragmentDirections.actionRestart())
@@ -65,6 +64,9 @@ class ScoreFragment : Fragment() {
         })
 
         binding.scoreViewModel = viewModel
+        // Specify the current activity as the lifecycle owner of the binding.
+        // This is used so that the binding can observe LiveData updates
+        binding.lifecycleOwner = this
 
         return binding.root
     }
