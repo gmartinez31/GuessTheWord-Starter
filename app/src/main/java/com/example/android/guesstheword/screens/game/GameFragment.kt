@@ -61,23 +61,11 @@ class GameFragment : Fragment() {
         viewModel.word.observe(this, Observer { newWord -> binding.scoreText.text = newWord.toString() })
         viewModel.eventGameFinished.observe(this, Observer<Boolean> { hasFinished -> if (hasFinished) gameFinished() })
 
-        binding.correctButton.setOnClickListener { onCorrect() }
-        binding.skipButton.setOnClickListener { onSkip() }
-        binding.endGameButton.setOnClickListener { onEndGame() }
+        // here we data binded the viewmodel of this fragment to the one listed in the view (game_fragment.xml) to have direct communication between the VM and View
+        // Thereafter, we can use listener bindings to change certain view elements based on the logic defined in vm via typical events such as onClick, onZoomIn, etc.
+        binding.gameViewModel = viewModel
 
         return binding.root
-    }
-
-    private fun onSkip() {
-        viewModel.onSkip()
-    }
-
-    private fun onCorrect() {
-        viewModel.onCorrect()
-    }
-
-    private fun onEndGame() {
-        gameFinished()
     }
 
     private fun gameFinished() {
