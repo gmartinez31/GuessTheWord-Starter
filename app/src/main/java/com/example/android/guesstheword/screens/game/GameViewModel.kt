@@ -1,5 +1,6 @@
 package com.example.android.guesstheword.screens.game
 
+import android.os.CountDownTimer
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LiveData
@@ -7,6 +8,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 public class GameViewModel : ViewModel() {
+
+    companion object {
+        private const val DONE = 0L
+        private const val INTERVAL = 1000L
+        private const val COUNTDOWN_TIME = 60000L
+    }
 
     // What we're doing here is encapsulating the MutableLiveData objects. To prevent anything but the VM from modifying these guys
     // We add backing properties to allow read access via LiveData by overriding the default get() method
@@ -22,6 +29,12 @@ public class GameViewModel : ViewModel() {
     val eventGameFinished: LiveData<Boolean>
         get() = _eventGameFinished
 
+    private val _currentTime = MutableLiveData<Long>()
+    val currentTime: LiveData<Long>
+        get() = _currentTime
+
+    private val timer: CountDownTimer
+
     private lateinit var wordList: MutableList<String>
 
     init {
@@ -31,11 +44,25 @@ public class GameViewModel : ViewModel() {
 
         resetList()
         nextWord()
+
+        timer = object : CountDownTimer(COUNTDOWN_TIME, INTERVAL) {
+            override fun onTick(milliSecondsUntilFinished: Long) {
+                _currentTime.value = milliSecondsUntilFinished/INTERVAL
+            }
+
+            override fun onFinish() {
+                _currentTime.value = DONE
+                onGameFinished()
+            }
+        }
+
+        timer.start()
     }
 
     override fun onCleared() {
         super.onCleared()
         Log.i("GameViewModel", "GameViewModel destroyed")
+        timer.cancel()
     }
 
     private fun resetList() {
@@ -67,7 +94,7 @@ public class GameViewModel : ViewModel() {
 
     private fun nextWord() {
         if (wordList.isEmpty()) {
-            onGameFinished()
+            resetList()
         } else {
             //Select and remove a word from the list
             _word.value = wordList.removeAt(0)
