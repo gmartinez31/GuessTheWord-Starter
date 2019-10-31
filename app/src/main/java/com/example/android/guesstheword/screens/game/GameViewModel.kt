@@ -37,6 +37,9 @@ public class GameViewModel : ViewModel() {
 
     private val timer: CountDownTimer
     private lateinit var wordList: MutableList<String>
+
+    // we use Tranformations class to perform transformations of LiveData objects into other LiveData objects. The method below
+    // specifically takes the LiveData object and a lambda to perform on said object. This is how we transform
     val currentTimeString = Transformations.map(currentTime) {
         time -> DateUtils.formatElapsedTime(time)
     }
